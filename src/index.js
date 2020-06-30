@@ -2,11 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { green, orange } from '@material-ui/core/colors';
+
 import * as serviceWorker from './serviceWorker';
+
+const outerTheme = createMuiTheme({
+  palette: {
+    secondary: {
+      main: orange[500],
+    },
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={outerTheme}>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
