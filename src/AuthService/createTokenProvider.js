@@ -2,9 +2,10 @@ import baseUrl from 'settings';
 import axios from 'axios';
 
 export const createTokenProvider = () => {
-  // let _token =
-  //   JSON.parse(localStorage.getItem('REACT_TOKEN_AUTH') || '') || null;
-  let _token = null;
+  const localToken = localStorage.getItem('REACT_TOKEN_AUTH');
+  let _token = localToken ? JSON.parse(localToken) : null;
+  // JSON.parse(localStorage.getItem('REACT_TOKEN_AUTH') || '') || null;
+  // let _token = null;
 
   const getExpirationDate = (jwtToken) => {
     if (!jwtToken) {

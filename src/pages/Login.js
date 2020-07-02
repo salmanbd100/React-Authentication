@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { TextField, Container, Paper, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
 import { createAuthProvider } from 'AuthService';
 import axios from 'axios';
 import baseUrl from 'settings';
 
-const { useAuth, authFetch, login, logout } = createAuthProvider();
+const { login } = createAuthProvider();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,6 +32,7 @@ export default function Login() {
     username: '',
     password: '',
   });
+  let history = useHistory();
 
   const onChange = ({ target: { name, value } }) => {
     setCredentials({ ...credentials, [name]: value });
@@ -40,25 +42,15 @@ export default function Login() {
     if (event) {
       event.preventDefault();
     }
-
-    console.log(credentials);
-
     axios
       .post(`${baseUrl.v1}/auth/login`, credentials)
       .then((response) => {
         login(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-
-    // fetch(`${baseUrl.v1}/auth/login`, {
-    //   method: 'POST',
-    //   body: JSON.stringify(credentials),
-    // })
-    //   .then((r) => r.json())
-    //   .then((token) => console.log(token));
+    history.push('/');
   };
 
   return (
