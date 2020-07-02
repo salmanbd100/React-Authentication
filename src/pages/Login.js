@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextField, Container, Paper, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { createAuthProvider } from 'AuthService';
+import axios from 'axios';
+import baseUrl from 'settings';
+
+const { useAuth, authFetch, login, logout } = createAuthProvider();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,6 +27,40 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const classes = useStyles();
+  const [credentials, setCredentials] = useState({
+    username: '',
+    password: '',
+  });
+
+  const onChange = ({ target: { name, value } }) => {
+    setCredentials({ ...credentials, [name]: value });
+  };
+
+  const onSubmit = (event) => {
+    if (event) {
+      event.preventDefault();
+    }
+
+    console.log(credentials);
+
+    axios
+      .post(`${baseUrl.v1}/auth/login`, credentials)
+      .then((response) => {
+        login(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // fetch(`${baseUrl.v1}/auth/login`, {
+    //   method: 'POST',
+    //   body: JSON.stringify(credentials),
+    // })
+    //   .then((r) => r.json())
+    //   .then((token) => console.log(token));
+  };
+
   return (
     <Container fixed>
       <form className={classes.root} noValidate autoComplete='off'>
@@ -32,6 +71,8 @@ export default function Login() {
             id='outlined-basic'
             label='Username'
             variant='outlined'
+            name='username'
+            onChange={onChange}
           />
           <TextField
             className={classes.input}
@@ -40,8 +81,10 @@ export default function Login() {
             type='password'
             autoComplete='current-password'
             variant='outlined'
+            name='password'
+            onChange={onChange}
           />
-          <Button variant='outlined' color='primary'>
+          <Button onClick={onSubmit} variant='outlined' color='primary'>
             Submit
           </Button>
         </Paper>
